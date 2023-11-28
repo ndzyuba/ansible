@@ -1,0 +1,30 @@
+---
+
+- name: install patroni and etcd
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - patroni
+    - python-etcd
+
+- name: create directory patroni
+  file:
+    state: directory
+    dest: /etc/patroni
+
+- name: Put patroni config file
+  template:
+    src: templates/patroni.yml.j2
+    dest: /etc/patroni/patroni.yml
+
+- name: Create service patroni
+  template:
+    src: templates/patroni.service.j2
+    dest: /etc/systemd/system/patroni.service
+
+- name: Sevice enable  and start patroni
+  systemd:
+    name: patroni
+    state: started
+    enabled: yes

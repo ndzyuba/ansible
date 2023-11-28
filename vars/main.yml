@@ -1,0 +1,13 @@
+---
+# etc_host vars
+etc_hosts:
+  - "192.168.0.54 k8master"
+  - "192.168.0.55 slavenode"
+  - "192.168.0.56 slavenod2"
+
+# etcd vars
+etcd_data_dir: /data/data_etcd
+etcd_cluster_name: test_cluster
+# patroni vars
+patroni_cluster_name: postgres-cluster 
+patroni_namespace: cluster/

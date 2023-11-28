@@ -1,0 +1,8 @@
+---
+
+- name: Add host in /etc/hosts file
+  lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ item }}"
+    line: "{{ item }}"
+  loop: "{{ etc_hosts }}"

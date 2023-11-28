@@ -1,0 +1,24 @@
+---
+
+- name: Install etcd
+  apt:
+    name: etcd
+    state: present
+
+- name: Create directory for data (etcd)
+  file:
+    path: "{{ etcd_data_dir }}"
+    state: directory
+    owner: etcd
+    mode: "0700"
+
+- name: Create conf file in /etc/default/etcd
+  template:
+    src: templates/etcd.conf.j2
+    dest: /etc/default/etcd
+  notify: restart etcd
+
+- name: Start and enable etcd
+  systemd_service:
+    name: etcd
+    enabled: true

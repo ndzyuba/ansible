@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+  
+  pre_tasks:
+    - name: Load vars in /vars/vars.yml
+      include_vars: "vars/main.yml"
+
+  roles:
+    #- etc_hosts
+      # - etcd
+      #    - postgresql
+    - patroni
