@@ -1,10 +1,20 @@
 ---
+- name: Install pytho3
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install acl packages
+  apt:
+    name: acl
+    state: present
 
 - name: install patroni and etcd
   pip:
     name: "{{ item }}"
     state: present
   with_items:
+    - psycopg2-binary
     - patroni
     - python-etcd
 
@@ -12,11 +22,23 @@
   file:
     state: directory
     dest: /etc/patroni
+    
+
+- name: create directory postgresql
+  file:
+    state: directory
+    dest: /data_db/patroni
+    owner: postgres
+    group: postgres
+    mode: "0700"
 
 - name: Put patroni config file
   template:
     src: templates/patroni.yml.j2
     dest: /etc/patroni/patroni.yml
+    owner: postgres
+    group: postgres
+    mode: "0640"
 
 - name: Create service patroni
   template:
@@ -27,4 +49,4 @@
   systemd:
     name: patroni
     state: started
-    enabled: yes
+    enabled: true

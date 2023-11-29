@@ -1,5 +1,0 @@
----
-- name: Restart etcd
-  systemd_service:
-    name: etcd
-    state: restarted

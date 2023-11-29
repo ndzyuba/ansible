@@ -33,33 +33,23 @@ bootstrap:
   - host replication replicator 192.168.0.55/24 md5
   - host replication replicator 192.168.0.56/24 md5
   - host all all 0.0.0.0/0 md5
-  users:
-    superuser:
-      password: 123
-      options:
-        - createrole
-        - createdb
-    replicator:
-      password: 123
-      options:
-        - replication
 
 postgresql:
   listen: 0.0.0.0:5432
   connect_address: {{ ansible_default_ipv4.address }}:5432
   config_dir: /etc/postgresql/15/main
-  data_dir: /var/lib/postgresql/15/main
+  data_dir: /data_db/patroni
   bin_dir: /usr/lib/postgresql/15/bin
   pg_rewind:
     username: superuser
-    password: 123
+    password: adc
   pg_hba:
     - host all all 0.0.0.0/0 md5
     - hostssl all all 0.0.0.0/0 md5
   authentication:
     replication:
       username: replicator
-      password: 123
+      password: 'mypassword3332'
     superuser:
-      username: superuser
-      password: 123
+      username: postgres
+      password: 'mypassword1232'
