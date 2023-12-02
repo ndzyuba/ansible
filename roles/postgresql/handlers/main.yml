@@ -1,7 +1,0 @@
----
-
-- name: Postgresql stop service
-  systemd_service:
-    name: postgresql
-    state: stopped
-    enabled: false

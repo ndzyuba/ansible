@@ -17,4 +17,10 @@
   template:
     src: templates/etcd.conf.j2
     dest: /etc/default/etcd
-  notify: restart etcd
+
+- name: restart etcd
+  systemd_service:
+    daemon_reload: true
+    name: etcd
+    state: restarted
+    enabled: true

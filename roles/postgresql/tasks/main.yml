@@ -1,7 +1,5 @@
 ---
 
-- include_vars: vars.yml
-
 - name: Add Postgresql repository key
   apt_key:
     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
@@ -16,4 +14,48 @@
     name: postgresql-15
     state: present
     update_cache: yes
-  notify: Postgresql stop service
+
+- name: Install acl packages
+  apt:
+      name: acl
+      state: present
+
+- name: Install pytho3
+  apt:
+    name: python3-pip
+    state: present
+
+- name: install psycopg2-binary for module postgresql_user
+  pip:
+    name: psycopg2-binary
+    state: present
+
+
+- name: Start Postgres
+  systemd_service:
+    name: postgresql
+    state: started
+
+- name: Create superuser in postgres
+  postgresql_user:
+    state: present
+    name: "{{ superuser }}"
+    password: " {{ superuser_passwd }}"
+    role_attr_flags: SUPERUSER
+  become: true
+  become_user: postgres
+
+- name: Create replicator in postgres
+  postgresql_user:
+    state: present
+    name: "{{ replicator }}"
+    password: " {{ replicator_passwd }}"
+    role_attr_flags: REPLICATION
+  become: true
+  become_user: postgres
+
+- name: Postgresql stop service
+  systemd_service:
+    name: postgresql
+    state: stopped
+    enabled: false

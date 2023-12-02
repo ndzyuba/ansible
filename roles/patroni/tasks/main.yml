@@ -1,27 +1,17 @@
 ---
-- name: Install pytho3
-  apt:
-    name: python3-pip
-    state: present
 
-- name: Install acl packages
-  apt:
-    name: acl
-    state: present
+- name: create directory patroni
+  file:
+    state: directory
+    dest: /etc/patroni
 
 - name: install patroni and etcd
   pip:
     name: "{{ item }}"
     state: present
   with_items:
-    - psycopg2-binary
     - patroni
     - python-etcd
-
-- name: create directory patroni
-  file:
-    state: directory
-    dest: /etc/patroni
     
 
 - name: create directory postgresql
@@ -48,5 +38,5 @@
 - name: Sevice enable  and start patroni
   systemd:
     name: patroni
-    state: started
+    state: restarted
     enabled: true

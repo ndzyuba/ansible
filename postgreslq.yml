@@ -8,7 +8,7 @@
       include_vars: "vars/main.yml"
 
   roles:
-    - etc_hosts
-    - etcd
-    - postgresql
+    #    - etc_hosts
+    #    - etcd
+    #    - postgresql
     - patroni
