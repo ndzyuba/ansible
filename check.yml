@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Check patroni
+      shell: sudo patronictl -c /etc/patroni/patroni.yml list | grep "Leader" | awk '{print $2}'
+      register: result
+
+    - name: result
+      debug:
+        msg: "{{ result }}"
+
+    - name: Check leader
+      file:
+        path: /home/admin123/111
+        state: directory
+      delegate_to: "{{ result.stdout }}"

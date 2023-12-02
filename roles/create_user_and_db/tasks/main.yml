@@ -1,0 +1,32 @@
+---
+- name: Check patroni, who is leader
+  shell: sudo patronictl -c /etc/patroni/patroni.yml list | grep "Leader" | awk '{print $2}'
+  register: result
+ 
+- name: Create db user
+  postgresql_user:
+    state: present
+    name: "{{ db_user }}"
+    password: " {{ db_password }}"
+  become: true
+  become_user: postgres
+  when: ansible_host == result.stdout
+                                    
+- name: Create db
+  postgresql_db:
+    state: present
+    name: "{{ db_name }}"
+  become: yes
+  become_user: postgres
+  when: ansible_host == result.stdout
+
+- name: Access db for user
+  postgresql_privs:
+    type: database
+    database: "{{ db_name }}"
+    role: "{{ db_user }}"
+    grant_option: no
+    privs: all
+  become: yes
+  become_user: postgres
+  when: ansible_host == result.stdout

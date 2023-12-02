@@ -11,4 +11,5 @@
     #    - etc_hosts
     #    - etcd
     #    - postgresql
-    - patroni
+    #    - patroni
+    - pgbouncer

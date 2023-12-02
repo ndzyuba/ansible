@@ -1,0 +1,41 @@
+---
+
+- name: Install pgbouncer
+  apt:
+    name: pgbouncer
+    state: present
+    update_cache: yes
+
+- name: Write config pgbouncer.ini
+  template:
+    src: templates/pgbouncer.ini.j2
+    dest: /etc/pgbouncer/pgbouncer.ini
+    owner: postgres
+    group: postgres
+    mode: "0510"
+
+- name: Get Scrum secret superuser
+  shell: psql -U postgres -c 'select * from pg_shadow' | grep '{{ superuser }}' | awk '{print$13}'
+  register: super_scrum_secret
+
+- name: Add superuser in userlist
+  lineinfile:
+    path: /etc/pgbouncer/userlist.txt
+    regexp: '^"{{ superuser }}" "{{ super_scrum_secret.stdout }}"'
+    line: '"{{ superuser }}" "{{ super_scrum_secret.stdout }}"'
+
+- name: Get Scrum secret db_user
+  shell: psql -U postgres -c 'select * from pg_shadow' | grep '{{ db_user }}' | awk '{print$13}'
+  register: db_user_secret_scrum
+
+- name: Add db_user in userlist
+  lineinfile:
+    path: /etc/pgbouncer/userlist.txt
+    regexp: '^"{{ db_user }}" "{{ db_user_secret_scrum.stdout }}"'
+    line: '"{{ db_user }}" "{{ db_user_secret_scrum.stdout }}"'  
+
+- name: Restart pgbouncer service
+  systemd:
+    name: pgbouncer
+    state: restarted
+    enabled: true

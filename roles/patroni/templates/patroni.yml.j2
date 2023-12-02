@@ -20,6 +20,7 @@ bootstrap:
       use_pg_rewind: true
       use_slots: true
       parameters:
+	wal_level: replica
         max_wal_senders: 10
         wal_keep_segments: 8
         max_replication_slots: 5
@@ -32,24 +33,33 @@ bootstrap:
   - host replication replicator 192.168.0.54/24 md5
   - host replication replicator 192.168.0.55/24 md5
   - host replication replicator 192.168.0.56/24 md5
+  - host replication postgres 127.0.0.1/24 md5
   - host all all 0.0.0.0/0 md5
+  
+  users:
+    admin:
+      password: 'pass12345'
+      options:
+        - createrole
+        - createdb
 
 postgresql:
   listen: 127.0.0.1, {{ ansible_default_ipv4.address }}:5432
   connect_address: {{ ansible_default_ipv4.address }}:5432
-  config_dir: /data_db/patroni
   data_dir: /data_db/patroni
   bin_dir: /usr/lib/postgresql/15/bin
   pg_hba:
     - host replication replicator 192.168.0.54/24 md5
     - host replication replicator 192.168.0.55/24 md5
     - host replication replicator 192.168.0.56/24 md5
+    - host replication postgres 127.0.0.1/24 md5
     - host all all 0.0.0.0/0 md5
     - hostssl all all 0.0.0.0/0 md5
+    - local all postgres trust
   authentication:
     replication:
       username: {{ replicator }}
       password: '{{ replicator_passwd }}'
     superuser:
       username: {{ superuser }}
-      password: '{{ replicator_passwd }}'
+      password: '{{ superuser_passwd }}'
