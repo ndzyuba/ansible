@@ -4,6 +4,8 @@ etc_hosts:
   - "192.168.0.54 k8master"
   - "192.168.0.55 slavenode"
   - "192.168.0.56 slavenode2"
+  - "192.168.0.57 haproxy1"
+  - "192.168.0.58 haproxy2"
 
 # etcd vars
 etcd_data_dir: /data/data_etcd

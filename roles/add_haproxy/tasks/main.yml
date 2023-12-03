@@ -1,0 +1,28 @@
+---
+
+- name: Install haproxy
+  apt:
+    name: haproxy
+    state: present
+    update_cache: yes
+
+- name: Collect gather facts group cluster for template
+  ansible.builtin.setup:
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  loop: "{{ groups['cluster'] }}"
+
+- name: Write config file haproxy.cfg
+  template:
+    src: templates/haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+
+- name: Haproxy service enable
+  systemd:
+    name: haproxy
+    enabled: true
+
+- name: Restart haproxy service
+  systemd:
+    name: haproxy
+    state: restarted

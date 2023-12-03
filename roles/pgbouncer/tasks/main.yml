@@ -34,8 +34,12 @@
     regexp: '^"{{ db_user }}" "{{ db_user_secret_scrum.stdout }}"'
     line: '"{{ db_user }}" "{{ db_user_secret_scrum.stdout }}"'  
 
+- name: Pgbouncer service enbled
+  systemd:
+    name: pgbouncer
+    enabled: true
+
 - name: Restart pgbouncer service
   systemd:
     name: pgbouncer
     state: restarted
-    enabled: true

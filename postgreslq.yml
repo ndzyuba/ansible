@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: cluster
   become: true
   gather_facts: true
   
@@ -11,5 +11,5 @@
     #    - etc_hosts
     #    - etcd
     #    - postgresql
-    #    - patroni
+    #- patroni
     - pgbouncer
