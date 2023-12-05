@@ -1,16 +1,16 @@
 # Install Postgresql cluster ( etcd, patroni, pgbounce, haproxy, keepalived).
 # Ubuntu 22.04.2 LTS
 Для автоматизации развертывания используются роли:
-[etc_hosts](#etc_hosts)  
-[etcd](#etcd)
-[postgres](#postgres)  
-[patroni](#patroni)
-[create_user_and_db](#create_user)
-[pgbounce](#images)  
+- [etc_hosts](#etc_hosts)  
+- [etcd](#etcd)
+- [postgres](#postgres)  
+- [patroni](#patroni)
+- [create_user_and_db](#create_user)
+- [pgbounce](#images)  
 
-[Haproxy node](#haproxy_node)
-[add_haproxy](#add_haproxy)
-[keepalive](#keepalive)
+- [Haproxy node](#haproxy_node)
+- [add_haproxy](#add_haproxy)
+- [keepalive](#keepalive)
 
 <a name="headers"><h2>etc_hosts</h2></a>
 В данной роли мы добавляем все хосты которые будем использовать в /etc/hosts. Хосты указаны в /vars/main.yml -> в переменной etc_hosts
