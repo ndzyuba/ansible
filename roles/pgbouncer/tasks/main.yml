@@ -15,24 +15,44 @@
     mode: "0510"
 
 - name: Get Scrum secret superuser
-  shell: psql -U postgres -c 'select * from pg_shadow' | grep '{{ superuser }}' | awk '{print$13}'
+  postgresql_query: 
+    query: select passwd from pg_shadow where usename = %(username_val)s
+    login_host: 127.0.0.1
+    login_password: "{{ superuser_passwd }}"
+    named_args: 
+      username_val: "{{ superuser }}"
+  become: true
+  become_user: postgres
   register: super_scrum_secret
+
+- debug:
+    msg: '{{ super_scrum_secret.query_result[0]["passwd"] }}'
+
+- debug:
+    msg: '"{{ superuser }}" "{{ super_scrum_secret.query_result[0]["passwd"] }}"'
 
 - name: Add superuser in userlist
   lineinfile:
     path: /etc/pgbouncer/userlist.txt
-    regexp: '^"{{ superuser }}" "{{ super_scrum_secret.stdout }}"'
-    line: '"{{ superuser }}" "{{ super_scrum_secret.stdout }}"'
+    regexp: '^"{{ superuser }}" "{{ super_scrum_secret.query_result[0]["passwd"] }}"'
+    line: '"{{ superuser }}" "{{ super_scrum_secret.query_result[0]["passwd"] }}"'
 
 - name: Get Scrum secret db_user
-  shell: psql -U postgres -c 'select * from pg_shadow' | grep '{{ db_user }}' | awk '{print$13}'
-  register: db_user_secret_scrum
+  postgresql_query:
+    query: select passwd from pg_shadow where usename = %(username_val)s
+    login_host: 127.0.0.1
+    login_password: "{{ superuser_passwd }}"
+    named_args:
+      username_val: "{{ db_user }}"
+  become: true
+  become_user: postgres
+  register: db_user_scrum
 
 - name: Add db_user in userlist
   lineinfile:
     path: /etc/pgbouncer/userlist.txt
-    regexp: '^"{{ db_user }}" "{{ db_user_secret_scrum.stdout }}"'
-    line: '"{{ db_user }}" "{{ db_user_secret_scrum.stdout }}"'  
+    regexp: '^"{{ db_user }}" "{{ db_user_scrum.query_result[0]["passwd"] }}"'
+    line: '"{{ db_user }}" "{{ db_user_scrum.query_result[0]["passwd"] }}"'
 
 - name: Pgbouncer service enbled
   systemd:

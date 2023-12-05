@@ -1,0 +1,4 @@
+---
+
+- name: Delete old-cluster
+  shell: pg_dropcluster 15 main

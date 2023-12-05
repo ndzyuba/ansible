@@ -19,6 +19,8 @@ superuser_passwd: zavod_123456
 replicator: replicator
 replicator_passwd: repo_123456
 #--------------------
-db_user: grisha
-db_password: user555
-db_name: test_db3
+db_user: frank
+db_password: test123456
+db_name: mytest
+# haproxy
+keepalived_ip: 192.168.0.59

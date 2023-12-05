@@ -1,0 +1,26 @@
+---
+
+- name: Install keepalived
+  apt:
+    name: keepalived
+    state: present
+    update_cache: yes
+
+- name: Edit config file /etc/sysctl.conf
+  template:
+    src: templates/sysctl.conf.j2
+    dest: /etc/sysctl.conf
+
+- name: Applying changes /etc/sysctl.conf
+  shell: sysctl -p
+
+- name: Edit config keepalived
+  template:
+    src: templates/keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+
+- name: Start and enabled keepalived
+  systemd:
+    name: keepalived
+    state: started
+    enabled: true

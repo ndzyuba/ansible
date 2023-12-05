@@ -56,6 +56,7 @@ postgresql:
   - host all all 0.0.0.0/0 md5
   - hostssl all all 0.0.0.0/0 md5
   - host all postgres 127.0.0.1/24 md5
+  - host all {{ db_user }} 127.0.0.1/24 md5
   authentication:
     replication:
       username: {{ replicator }}

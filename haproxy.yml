@@ -10,3 +10,4 @@
   roles:
     - etc_hosts
     - add_haproxy
+    - keepalived

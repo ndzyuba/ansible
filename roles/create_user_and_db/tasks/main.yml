@@ -1,22 +1,37 @@
 ---
+
+- name: Check patroni, who is leader
+  shell: sudo patronictl -c /etc/patroni/patroni.yml list | grep "Leader" | awk '{print $2}'
+  register: result
+
+- name: Wait 1 minuter
+  ansible.builtin.wait_for:
+    timeout: 40
+  delegate_to: localhost
+  when: result.stdout == ""
+
 - name: Check patroni, who is leader
   shell: sudo patronictl -c /etc/patroni/patroni.yml list | grep "Leader" | awk '{print $2}'
   register: result
  
-- name: Create db user
-  postgresql_user:
-    state: present
-    name: "{{ db_user }}"
-    password: " {{ db_password }}"
-  become: true
-  become_user: postgres
-  when: ansible_host == result.stdout
-                                    
 - name: Create db
   postgresql_db:
     state: present
+    login_host: 127.0.0.1
+    login_password: "{{ superuser_passwd }}"
     name: "{{ db_name }}"
   become: yes
+  become_user: postgres
+  when: ansible_host == result.stdout
+
+- name: Create db user
+  postgresql_user:
+    state: present
+    login_host: 127.0.0.1
+    login_password: "{{ superuser_passwd }}"
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+  become: true
   become_user: postgres
   when: ansible_host == result.stdout
 
@@ -26,7 +41,13 @@
     database: "{{ db_name }}"
     role: "{{ db_user }}"
     grant_option: no
-    privs: all
+    login_host: 127.0.0.1
+    login_password: "{{ superuser_passwd }}"
+    privs: "{{ item }}"
   become: yes
   become_user: postgres
+  with_items:
+    - CONNECT
+    - CREATE
+    - TEMPORARY
   when: ansible_host == result.stdout
