@@ -2,7 +2,7 @@
 # Ubuntu 22.04.2 LTS
 Для автоматизации развертывания используются роли:
 [etc_hosts](#etc_hosts)  
-[etcd](#etcd)  
+[etcd](#etcd)
 [postgres](#postgres)  
 [patroni](#patroni)
 [create_user_and_db](#create_user)
