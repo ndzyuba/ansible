@@ -25,12 +25,6 @@
   become_user: postgres
   register: super_scrum_secret
 
-- debug:
-    msg: '{{ super_scrum_secret.query_result[0]["passwd"] }}'
-
-- debug:
-    msg: '"{{ superuser }}" "{{ super_scrum_secret.query_result[0]["passwd"] }}"'
-
 - name: Add superuser in userlist
   lineinfile:
     path: /etc/pgbouncer/userlist.txt
