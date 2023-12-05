@@ -31,7 +31,7 @@
 - Устанавливаем пакет acl
 - Останавливаем Postgresql, с последующим использованием handler (удаление кластера)
 
-<a name="headers"><h2>postgres</h2></a>
+<a name="headers"><h2>patroni</h2></a>
 - Создаем директорию /etc/patroni
 - Устанавливаем python
 - Устанавливаем lib python psycopg2-binary (понадобиться для взаимодействия ansible c postgres), patroni, python-etcd
