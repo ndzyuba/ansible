@@ -18,9 +18,20 @@ defaults
     timeout server 30m
     timeout check 5s
  
-listen postgres
+listen_postgres_write
     bind *:5000
     option httpchk
+    http-check send meth GET uri /master
+    http-check expect status 200
+    default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+{% for host in groups['cluster'] %}
+    server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['inventory_hostname'] }}:6432 maxconn 300 check port 8008
+{% endfor %}
+
+listen postgres_read
+    bind *:5001
+    option httpchk
+    http-check send meth GET uri /replica
     http-check expect status 200
     default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
 {% for host in groups['cluster'] %}
